@@ -1,1 +1,15 @@
 /* css styles */
+/* Change the font color of the navbar links to white */
+.navbar a.nav-link {
+  color: #FFFFFF !important;
+}
+
+/* Change the font color of the active tab to white */
+.navbar a.nav-link.active {
+  color: #FFFFFF !important;
+}
+
+/* Ensure the navbar background color is consistent */
+.navbar {
+  background-color: #F5A3D8 !important;
+}

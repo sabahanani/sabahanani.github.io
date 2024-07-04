@@ -5,6 +5,7 @@ project:
 website:
   title: "Saba Hanani"
   navbar:
+    background: "#F5A3D8"
     left:
       - href: index.qmd
         text: Home
@@ -13,7 +14,10 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme: simplex
+    mainfont: arial
+    fontsize: 1rem
+    monofont: courier new
     css: styles.css
     toc: true
 
