@@ -3,12 +3,13 @@ project:
   output-dir: docs
 
 website:
-  title: "sabahanani.github.io"
+  title: "Saba Hanani"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - CV.qmd
+      - Projects.qmd
 
 format:
   html:
