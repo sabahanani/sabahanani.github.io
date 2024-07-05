@@ -2,3 +2,26 @@
 title: "Projects"
 editor: visual
 ---
+
+::: {raw}
+::: {style="display: flex; align-items: center;"}
+<img src="./assets/img/tidytuesday1.png" alt="Tidytuesday of May 20, 2024" width="200px" style="margin-right: 40px;"/>
+
+<div>
+
+[Tidytuesday of May 20, 2024](TidyTuesday1.html)
+
+</div>
+:::
+:::
+::: {raw}
+::: {style="display: flex; align-items: center;"}
+<img src="./assets/img/SQL.jpg" alt="SQL Class Assignment" width="200px" style="margin-right: 40px;"/>
+
+<div>
+
+[SQL Class Assignment](Assignment_Saba.html)
+
+</div>
+:::
+:::

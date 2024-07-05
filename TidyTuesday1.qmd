@@ -1,0 +1,153 @@
+---
+title: "Lisa's Vegetable Garden"
+format: html
+self-contained: TRUE
+editor: visual
+dir: ltr
+---
+
+## Tidytuesday
+
+The Tidytuesday challenge published on Monday 20/05/2024 had data on Lisa Lendway's vegetable garden.
+
+There were 6 data sets in total:
+
+planting_2020, planting_2021
+
+harvest_2020, harvest_2021
+
+spending_2020, spending_2021
+
+## The Data Sets
+
+planting_2020 & planting_2021:
+
+These data sets contained the following variables: vegetable, variation, number of seeds planted, and date.
+
+harvest_2020 & harvest_2021:
+
+These data sets contained the following variables: vegetable, variation, date, weight, and units.
+
+spending_2020 & spending_2021:
+
+These data sets contained the following variables: vegetable, variation, brand, and price (with and without tax).
+
+## The Research Question
+
+My exploration question was: what are the vegetables that yield the highest weight (in grams) per seed planted?
+
+In other words, how many grams does each seed yield for each vegetable?
+
+## How was the Data Explored?
+
+After I downloaded the data sets from the official tidytuesday github repository, I merged them by common columns (year, variation, vegetable).
+
+After that, I calculated grams per seed by summing weight and seed count separately, and I divided the overall weight by seed count (grouped by vegetable).
+
+grams per seed = overall vegetable weight/overall number of seeds planted
+
+I decided to visualize the top 3 vegetables that yielded the most weight per seed.
+
+## The Code
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(ggimage)
+library(grid)
+library(png)
+#loading the data
+spending_data <- read.csv("/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/spending_data.csv")
+planted_vegetables <- read.csv("/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/planted_vegetables.csv")
+harvested_vegetables <- read.csv("/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/harvested_vegetables.csv")
+#merging the data
+merged_data <- merge(planted_vegetables, harvested_vegetables, by = c("year", "vegetable", "variety"), all = TRUE)
+merged_data <- merge(merged_data, spending_data, by = c("year", "vegetable", "variety"), all = TRUE)
+merged_data <- select(merged_data, -date.x, -date.y, -notes, -eggplant_item_number, -plot,-brand,-variety,-year,-price)
+merged_data<-na.omit(merged_data)
+setwd("/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday")
+write.csv(merged_data,"merged_data.csv", row.names = FALSE)
+#converting the relevant variables to numeric (making sure)
+merged_data <- merged_data |> 
+  mutate(
+    number_seeds_planted = as.numeric(number_seeds_planted),
+    weight = as.numeric(weight),
+    price_with_tax = as.numeric(price_with_tax)  # Ensure this column is numeric too
+  )
+#calculating grams per seed
+grouped_data <- merged_data |> 
+  group_by(vegetable) |> 
+  summarise(
+    total_weight = sum(weight),
+    total_seeds = sum(number_seeds_planted),
+    .groups = "drop"  
+  ) |> 
+  mutate(
+    grams_per_seed = total_weight / total_seeds,
+  )
+#top 3 vegetables by grams_per_seed
+top_vegetables <- grouped_data |> arrange(desc(grams_per_seed)) |> head(3) |> arrange(grams_per_seed)
+#arranging
+vegetable_order <- top_vegetables$vegetable
+top_vegetables <- top_vegetables |> mutate(vegetable = factor(vegetable, levels = vegetable_order))
+#images to replace bars, and adding images as labels
+pics<-c("/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/finalimages/IMG_5578-removebg-preview.png",
+        "/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/finalimages/Screenshot_2024-05-31_at_13.20.05-removebg-preview.png",
+        "/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/finalimages/Screenshot_2024-05-31_at_13.20.26-removebg-preview.png"
+        )
+labelpics<-c("/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/finalimages/407-removebg-preview (1).png",
+             "/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/finalimages/576-removebg-preview.png",
+             "/Users/sabahanani/Desktop/תואר שני/Semester B/מעבדה במדעי הנתונים ופסיכולוגיה/tidytuesday/finalimages/618-removebg-preview.png")
+#image sizing
+image_rasters <- lapply(pics, function(path) rasterGrob(readPNG(path), interpolate = TRUE))
+#plotting
+p <- ggplot(top_vegetables, aes(x = vegetable, y = grams_per_seed)) +
+  geom_bar(stat = "identity", fill = "transparent") +
+  scale_y_continuous(limits = c(0, 800), breaks = seq(0, 800, by = 50)) +
+  labs(title = "Top Crops by Average Crop Yield", 
+       subtitle = "(Grams harvested per seed)",
+       x = "Crop", y = "Crop Yield (in grams)") +
+  theme_minimal() +
+  theme(
+    panel.background = element_rect(fill = "turquoise4"),
+    plot.background = element_rect(fill = "turquoise4"),
+    plot.title = element_text(color = "white", hjust = 0.5),
+    plot.subtitle = element_text(color = "white", hjust = 0.5),
+    axis.text = element_text(color = "white"),
+    axis.title = element_text(color = "white"),
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor.x = element_blank()
+  ) + 
+  geom_image(aes(image = labelpics), size = 0.3, by = "width") 
+#adding custom annotations for each image, adjusting on y-axis
+for (i in seq_along(image_rasters)) {
+  p <- p + annotation_custom(
+    grob = image_rasters[[i]], 
+    xmin = i - 0.4, xmax = i + 0.4,
+    ymin = -50, ymax = top_vegetables$grams_per_seed[i]+12
+  )
+}
+#viewing the plot
+p <- p + labs(
+  caption = paste("Source: Lisa's Vegetable Garden, tidytuesday repo", "\nAI art generated by Microsoft's Copilot", sep = ""),
+  x = "Crop", y = "Crop Yield (in grams)"
+) +
+  theme(
+    plot.caption = element_text(color = "white")  
+  )
+# Viewing the plot
+p
+
+```
+
+## Results
+
+The three top vegetables were zucchini, tomatoes, and pumpkins. Pumpkins yielded about 618 grams per seed, tomatoes yielded about 576 grams per seed, and zucchinis yielded about 407 grams per seed.
+
+However, there are factors that were not taken into account.
+
+### Factors that Could Influence the Data
+
+Environmental factors: soil quality, temperature, moisture, and sun exposure.
+
+Vegetable variation: the exploration question did not take the vegetable variation into account.

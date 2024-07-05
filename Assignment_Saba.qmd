@@ -1,0 +1,303 @@
+---
+title: "SQL Class Assignment"
+author: "Saba Hanani"
+format: html
+self-contained: TRUE
+editor: visual
+---
+
+## Q1
+
+You are a data scientist at Strauss-Elite.\
+Your boss hands you a data request by a client. You said you would get to it the next day - but that night you went out partying, and when you awoke the next morning you found the following query typed out on your computer, having no recollection of writing it, nor can you find the client’s request.
+
+```         
+WITH total_orders AS (
+SELECT cid, SUM(Price * amount) AS sum_total
+FROM `orders`
+LEFT JOIN products USING (pid)
+WHERE (sale_date > '2023-01-01')
+GROUP BY cid
+)
+SELECT *
+FROM total_orders
+LEFT JOIN customers USING (cid)
+ORDER BY sum_total DESC
+LIMIT 1
+```
+
+\
+1. **Assuming you got it right - what did the client want? Explain the query.**\
+To understand the query, we must break it down by working inside out, then explain it line by line (or clause by clause).\
+The query starts with *WITH*, which is a Common Table Expression. What *WITH* does is make nested queries more readable. It gives temporary names to each query instead of nesting the queries together in a complex way. This makes the code more manageable.\
+
+Let's break down the **first sub-query**:
+
+In the first line, a certain query is named "total_orders."
+
+`LEFT JOIN products USING (pid) WHERE (sale_date > '2023-01-01')`
+
+First of all, before we explain the *SELECT* statement, we have to understand where we are extracting, or *SELECT*ing, from.\
+We are left joining the *orders* table with another table called *products*. What *LEFT JOIN* does is join all the relevant rows from the left table (in this case *orders*), with another table using certain criteria. Here, we are using the column *pid* (product id) to join the two tables. The join will be done using rows from the *orders* table in the *pid* column, which have matching values in the *pid* column in the *products* table.\
+However, this join is filtered with *WHERE*. We are left joining the two tables on the condition that the *sale_date* (the date where the sale was made) column in the *orders* table has values bigger than *2023-01-01*.\
+So, we are left joining the matching rows in the *orders* table with the *products* table based on the *pid* column, focusing on rows that have values more than *2023-01-01*.\
+
+`SELECT cid, SUM(Price * amount) AS sum_total`
+
+In this line, we are selecting the column *cid* (customer id, found in the *orders* table). We are also selecting the columns *Price* (price of the candy bar, from the *products* table) and *amount* (amount of candy bars purchased, from the *orders* table), multiplying them (each row with the corresponding row), then summing the multiplication product for the corresponding *cid*. This sum of multiplications is named *sum_total*.\
+These columns are extracted from the joining of the two tables.\
+And as a whole:\
+\
+`WITH total_orders AS ( SELECT cid, SUM(Price * amount) AS sum_total FROM orders LEFT JOIN products USING (pid) WHERE (sale_date > '2023-01-01') GROUP BY cid )`\
+\
+This sub-query, previously named *total_orders* with the *WITH* statement, left joins the tables *orders* and *products* based on the *pid* column. For each *cid* (`GROUP BY cid`), a *sum_total* is calculated, and the results that are shown are those after the date of *January 1st, 2023*.\
+\
+Now, let's break down the **second sub-query**:\
+\
+`LEFT JOIN customers USING (cid)`
+
+As said before, before we understand the *SELECT* statement, we have to know where we are selecting from. Here, we are left joining *total_orders* with a new table called *customers*, based on matching rows in the *cid* column.
+
+`SELECT * FROM total_orders`
+
+Now, we are selecting all columns from the joining of these two tables.
+
+`ORDER BY sum_total DESC`
+
+This line orders the results by the *sum_total* column in descending order. The highest values will be shown first.
+
+`LIMIT 1`
+
+Here, we are limiting the rows to one. This means that only one row will be shown. Since the results are shown in descending order based on the *sum_total* column, this means that the highest value will be shown.
+
+And, as a whole, again:
+
+`SELECT * FROM total_orders LEFT JOIN customers USING (cid) ORDER BY sum_total DESC LIMIT 1`
+
+This sub-query, in summary, left joins the *total_orders* table with the *customers* table using the *cid* column. It orders the table based on the *sum_total* column in descending order, and only the row with the highest *sum_total* value will be extracted.
+
+Taking these explanations into account, now we can sum up the **whole query**:
+
+In the first sub-query, we are left joining the *orders* table with the *products* table. Then we calculate, for each customer, the amount of money (*sum_total*) they spent on candy bars by multiplying the *price* of the candy bar by the *amount* purchased. This is only done for orders that were made after *January 1st, 2023*. This whole extraction is now called *total_orders*.\
+In the second sub-query, we are left joining the *total_orders* table with the *customers* table, orders the results in descending order based on how much money was spent, and shows the customer with the highest *sum_total* value.\
+Therefore, we can say that, essentially, this query extracts the customer id (*cid*) that spent the most amount of money (*sum_total*) on candy bars after *January 1st, 2023*.\
+\
+2. **Run the query - what is the answer?**\
+\
+To run the query, we must first set up a fake database connection.
+
+```{r}
+library(DBI)
+library(RSQLite)
+con_chocolate <- dbConnect(drv = SQLite(),
+dbname = "/Users/sabahanani/Desktop/Projects/sabahanani.github.io/chocolate.sqlite")
+
+```
+
+Now, we can run the query.
+
+```{sql, connection = con_chocolate}
+WITH total_orders AS (
+SELECT cid, SUM(Price * amount) AS sum_total
+FROM `orders`
+LEFT JOIN products USING (pid)
+WHERE (sale_date > '2023-01-01')
+GROUP BY cid
+)
+SELECT *
+FROM total_orders
+LEFT JOIN customers USING (cid)
+ORDER BY sum_total DESC
+LIMIT 1
+```
+
+As we can see, the output of the query is the customer who spent the most on candy bars: his id (822), the sum he spent (1057.03), his name (Joshua Beieler), and his address (1866 Smith St., Jacobson, Michigan).
+
+## Q2
+
+In a single query, find:\
+• Who is the sales rep that made the larger number of sales compared to the average of all sales reps that were recruited in the same year as him? How many sales?\
+• Who is their top customer (with the largest purchase)?\
+• What is the sales rep most sold candy bar?\
+
+(Supply both the answer and the query.)
+
+**First of all, let's write a sub-query to find the average sales of each sales rep compared to the average sales of the sales reps recruited in the same year:**
+
+```{sql, connection = con_chocolate}
+SELECT srid, Name, year_joined, COUNT(amount) AS sales_count, AVG(COUNT(amount)) OVER (PARTITION BY year_joined) AS avg_sales
+FROM salesreps LEFT JOIN orders USING(srid)
+GROUP BY srid
+```
+
+Let's break down the sub-query line by line:
+
+`FROM salesreps LEFT JOIN orders USING(srid)`\
+
+In this line, we are left joining the *salesreps* table with the *orders* table, based on the *srid* column.\
+
+`SELECT srid, Name, year_joined,COUNT(amount) AS sales_count, AVG(COUNT(amount)) OVER (PARTITION BY year_joined) AS avg_sales`\
+
+Here, we are selecting the *srid*, *Name*, and *year_joned* columns from the joining of the two tables. In addition, we are extracting the sales count of each sales rep, by using *COUNT(amount)* (this is given an alias of *sales_count*). To calculate the average of each sales count in a certain year, *AVG(COUNT(amount))* is used, and *PARTITION*ed over *year_joined* (later given an alias of *avg_sales*).\
+
+`GROUP BY srid`
+
+The results are then grouped by the sales rep's id.\
+
+Now, let's find the sales rep with the largest amount of sales compared to the sales reps who were recruited in the same year as them.\
+But first, let's give the initial sub-query an alias so we can reuse it:
+
+```{sql, connection = con_chocolate}
+WITH sales_year_avg AS (
+    SELECT srid, Name, year_joined,COUNT(amount) AS sales_count, AVG(COUNT(amount)) OVER (PARTITION BY year_joined) AS avg_sales
+    FROM salesreps LEFT JOIN orders USING(srid)
+    GROUP BY srid
+)
+--now let's select the salesrep with the most sales compared to the avg:
+SELECT *
+FROM sales_year_avg
+WHERE sales_count > avg_sales
+ORDER BY (sales_count - avg_sales) DESC
+LIMIT 1
+```
+
+`FROM sales_year_avg`\
+
+We are extracting from the initial sub-query, now named sales_year_avg. Previously, that sub-query calculated the average of the sales amount, partitioned by year.\
+
+`SELECT *`\
+
+Now, we are selecting, from sales_year_avg, all columns.\
+
+`WHERE sales_count > avg_sales`\
+
+we are filtering the rows selected, where the rows that will be extracted are the rows were the *sales_count* is larger than the *avg_sales*.\
+
+`ORDER BY (sales_count - avg_sales) DESC LIMIT 1`\
+
+Now, we are ordering the filtered rows based on the difference between *sales_count* and *avg_sales* in descending order. Then, we are limiting the results to one row. Since the rows are in a descending order, this should give us the sales rep with the largest difference between *sales_amount* and *avg_sales*.\
+
+**Now, let's find the sale's rep's top customer (with the largest purchase-according to how many candy bars purchased and not how much they paid):**\
+
+```{sql, connection = con_chocolate}
+SELECT customers.cid, Name AS customer_name, SUM(amount) AS total_purchase, orders.srid
+FROM customers 
+INNER JOIN orders ON customers.cid = orders.cid
+GROUP BY orders.cid
+ORDER BY total_purchase DESC
+```
+
+`FROM customers  INNER JOIN orders ON customers.cid = orders.cid`\
+
+Here, we are joining the *customers* table with the *orders* table using the *cid* column. The join of these tables will be our new table.\
+
+`SELECT Name AS customer_name, SUM(amount) AS total_purchase, srid`\
+
+Now, we are selecting the name of the customer (*customer_name*), the sum of the amount of candy bars they purchased (*SUM(amount)*-*total_purchase*). I gave the customer's name an alias because I don't want it to get confused with the sales reps names. Selecting *srid* will help us find the sales rep later.
+
+`GROUP BY orders.cid` To find the amount purchased by each customer, they have to be grouped by customer id.\
+
+`ORDER BY total_purchase`\
+
+Then, *total_purchase* is ordered in a descending manner, where the customer with the biggest purchase will be on top.\
+
+Now, let's join them:\
+
+```{sql, connection = con_chocolate}
+WITH sales_year_avg AS (
+    SELECT srid, Name, year_joined,COUNT(amount) AS sales_count, AVG(COUNT(amount)) OVER (PARTITION BY year_joined) AS avg_sales
+    FROM salesreps LEFT JOIN orders USING(srid)
+    GROUP BY srid),
+--giving an alias to the top sales rep
+top_salesrep AS (
+ SELECT *
+ FROM sales_year_avg
+ WHERE sales_count > avg_sales
+ ORDER BY (sales_count - avg_sales) DESC
+ LIMIT 1
+ ),
+--giving an alias to the top customer
+top_customer AS (
+ SELECT Name AS customer_name, SUM(amount) AS total_purchase, orders.srid
+ FROM customers 
+ INNER JOIN orders ON customers.cid = orders.cid
+ GROUP BY orders.cid
+ ORDER BY total_purchase DESC
+)
+--finding the top customer for the top sales rep
+SELECT *
+FROM top_salesrep INNER JOIN top_customer 
+USING(srid)
+LIMIT 1
+```
+
+**To find the sales rep most sold candy bar:**
+
+```{sql, connection = con_chocolate}
+SELECT candy_names, SUM(amount), orders.srid
+FROM orders INNER JOIN products 
+ON orders.pid=products.pid
+GROUP BY candy_names
+ORDER BY SUM(amount) DESC
+```
+
+`FROM orders INNER JOIN products  ON orders.pid=products.pid`\
+
+First, we join the order table with the products table using *pid*.\
+
+`SELECT candy_names, SUM(amount), orders.srid`\
+
+Then, we select the *candy_names*, how many of each was purchased, and the sales rep id (*srid*). This will help us find the sales rep later.\
+
+`GROUP BY candy_names ORDER BY SUM(amount) DESC`\
+
+Later, we group by candy names because we're interested in it as a whole category. Then, we order the results in a descending manner so the candy name with the most amount purchased will be shown first.\
+
+Now, let's find the sale's rep most sold candy bar name by joining:\
+
+```{sql, connection = con_chocolate}
+WITH sales_year_avg AS (
+    SELECT srid, Name, year_joined,COUNT(amount) AS sales_count, AVG(COUNT(amount)) OVER (PARTITION BY year_joined) AS avg_sales
+    FROM salesreps LEFT JOIN orders USING(srid)
+    GROUP BY srid),
+--giving an alias to the top sales rep
+top_salesrep AS (
+ SELECT *
+ FROM sales_year_avg
+ WHERE sales_count > avg_sales
+ ORDER BY (sales_count - avg_sales) DESC
+ LIMIT 1
+ ),
+--giving an alias to the top customer
+top_customer AS (
+ SELECT Name AS customer_name, SUM(amount) AS total_purchase, orders.srid
+ FROM customers 
+ INNER JOIN orders ON customers.cid = orders.cid
+ GROUP BY orders.cid
+ ORDER BY total_purchase DESC
+),
+--finding the top customer for the top sales rep, giving it an alias:
+top_sales_customer AS (
+ SELECT *
+ FROM top_salesrep INNER JOIN top_customer 
+ USING(srid)
+ LIMIT 1
+ ),
+--giving an alias to the most sold candy:
+top_candy AS (
+ SELECT candy_names, SUM(amount), orders.srid
+ FROM orders INNER JOIN products 
+ ON orders.pid=products.pid
+ GROUP BY candy_names
+ ORDER BY SUM(amount) DESC
+)
+--finding the sales rep most sold candy:
+SELECT *
+FROM top_sales_customer INNER JOIN top_candy 
+USING(srid)
+LIMIT 1
+```
+
+To sum up, the best performing sales representative compared to the average of the sales made by others recruited in the same year is: *Briana Pryor*, with a sales count of *177*.\
+Their top customer is: *Ashleigh Lavaka* (found according to how many candy bars she purchased).\
+Their most sold candy bar is: *Cookies 'n Cream*
