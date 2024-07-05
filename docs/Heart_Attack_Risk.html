@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.540">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Saba Hanani - Heart Attack Risk Prediction</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Saba Hanani</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./CV.html"> 
+<span class="menu-text">CV</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#method" id="toc-method" class="nav-link" data-scroll-target="#method">Method</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Heart Attack Risk Prediction</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>The dataset we will be using is called “Heart Attack Prediction,” downloaded from Kaggle. It includes 5,000 observations (randomly sampled and independent) and 26 variables:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Patient ID, Age, Sex (categorical), Cholesterol (continuous), Blood Pressure (continuous), Heart Rate (continuous), Diabetes (dummy coded, 0/1), Family History (dummy coded, 0/1), Smoking (dummy coded, 0/1), Obesity (dummy coded, 0/1), Alcohol Consumption (dummy coded, 0/1), Exercise Hours (continuous), Diet (categorical, Healthy/Average/Unhealthy), Previous Heart Problems (dummy coded, 0/1), Medication Use (dummy coded, 0/1), Stress Level (continuous), Sedentary Hours Per Day (continuous), Income (continuous), BMI (body mass index; continuous), Triglycerides (continuous), Physical Activity Days Per Week (discrete), Sleep Hours Per Day (discrete), Country (categorical), Continent (categorical), Hemisphere (categorical), and Heart Attack Risk (dummy coded, 0/1).</p>
+</section>
+<section id="method" class="level2">
+<h2 class="anchored" data-anchor-id="method">Method</h2>
+<p>We are going to test four research questions regarding the data on heart attack risk, using RStudio to statistically analyze the data:<br>
+1. Is there a difference in Cholesterol levels between female and male patients?<br>
+This question will be analyzed in three ways learned in class:<br>
+a. Null hypothesis significance testing (NHST): here, the null hypothesis would be that there is no difference between the genders, while the alternative hypothesis would state that there is a difference.<br>
+b. Equivalence test: here, the main question would be if Cholesterol levels for the genders are equivalent within a certain margin of error.<br>
+c.&nbsp;Bayesian Testing: here, we will test the probability that Cholesterol levels for females’ is different than that of males’, given the data and prior beliefs.<br>
+Before analyzing the data to answer this question, we will conduct a power analysis to determine the sample size needed.<br>
+2. How does Cholesterol levels vary across different combinations of Obesity and Smoking status? This question will be analyzed using a two-way analysis of variance (ANOVA). Our dependent variable will be Cholesterol, while our between-subject variables will be Obesity and Smoking.<br>
+3. Does BMI and Exercise Hours predict Cholesterol levels?<br>
+This question will be analyzed using a multiple regression model.<br>
+4. Does Exercise Hours Per Week moderate the relationship between Family History and Cholesterol?<br>
+This question will be analyzed using moderation analysis. In addition to this question, we will also be comparing the moderation model to the additive version to see which is a better fit and splitting the data of each model into training and test sets.<br>
+a new package we will be using in this assignment and that we have not learned in class is the “pwr” package. We chose to use this specific package to calculate how many participants are needed in each group to get to a statistical power of 90% in the t-test used in our first research question.</p>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p><strong>The First Question</strong></p>
+<p>First, we conducted a power analysis to determine the required sample size for a two-sample t-test. The parameters we considered were effect size (Cohen’s d) of 0.2 (bad scenario where there is only a small effect in the real world), a significance level of 0.05, and a desired power of 0.9 under a two-sided alternative hypothesis. The analysis yielded a calculated sample size of approximately 526 participants per group, indicating the number needed to achieve a statistical power of 90%. This ensures a larger likelihood of correctly rejecting the null hypothesis and detecting a meaningful effect size.<br>
+The t-test results showed that there is no significant difference between male patients (M = 200, SD = 29.76) and female patients (M = 199.56, SD = 30.86) in Cholesterol levels [t(4998) = 0.51, 95% C.I. (-1.23, 2.12),p = .6]. In assessing Cholesterol levels between male (M = 200, SD = 29.76) and female (M = 199.56, SD = 30.86) patients using two one-sided t-tests using equivalence testing, the results indicated that neither the test for the lower bound [t = 0.066, p = 0.47] nor the test for the upper bound [t = -1.099, p = 0.136] reached significance. The equivalence test overall was not significant [t= 0.07, p = 0.473], indicating that the difference in cholesterol levels between male and female groups does not fall within the predefined equivalence interval. Therefore, we cannot reject the null hypothesis that there is a difference in Cholesterol levels between males and females.<br>
+The Bayesian t-test indicated strong evidence in favor of the null hypothesis (BF=.036). This Bayes Factor suggests that the observed data are much more likely under the null hypothesis compared to the alternative hypothesis. The 95% Highest Density Interval (HDI) for the true difference between groups in cholesterol levels is estimated to be [-2.10, 1.19]. This interval spans both negative and positive differences, suggesting non-significant differences between the groups. The probability distribution (pd) indicates a 69.73% likelihood for the true difference to be slightly higher for a negative difference. Additionally, the Region of Practical Equivalence (ROPE) is defined as [-3.03, 3.03], where differences are considered negligible. Notably, 100% of the posterior distribution falls within this ROPE, indicating strong support for the practical equivalence between the groups. Cohen’s d was estimated to be -0.01 [95% CI (-0.07, 0.04)], suggesting a negligible negative effect size.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(afex) </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans) </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effectsize)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects) </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parameters) </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance) </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pwr)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(correlation)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(TOSTER) </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(BayesFactor) </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayestestR)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"/Users/sabahanani/Desktop/תואר שני/Semester A/שיטות מחקר מתקדמות/עבודה מסכמת/206683112_206357170.csv"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#NHST, Bayes, &amp; Equivalence test</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#first of all, power analysis</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">pwr.t.test</span>(<span class="at">d=</span><span class="fl">0.2</span>, <span class="at">sig.level=</span><span class="fl">0.05</span>, <span class="at">power=</span><span class="fl">0.9</span>, <span class="at">alternative=</span><span class="st">"two.sided"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     Two-sample t test power calculation 
+
+              n = 526.3332
+              d = 0.2
+      sig.level = 0.05
+          power = 0.9
+    alternative = two.sided
+
+NOTE: n is number in *each* group</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#t-test</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>t_test_HR <span class="ot">&lt;-</span> <span class="fu">t.test</span>(data<span class="sc">$</span>Cholesterol[data<span class="sc">$</span>Sex <span class="sc">==</span> <span class="st">"Male"</span>],</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                    data<span class="sc">$</span>Cholesterol[data<span class="sc">$</span>Sex <span class="sc">==</span> <span class="st">"Female"</span>], <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>t_test_HR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Two Sample t-test
+
+data:  data$Cholesterol[data$Sex == "Male"] and data$Cholesterol[data$Sex == "Female"]
+t = 0.51648, df = 4998, p-value = 0.6055
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -1.238192  2.123963
+sample estimates:
+mean of x mean of y 
+ 200.0004  199.5575 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># t-test results for Cholesterol levels between female and male patients:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># t-value = 0.51, p-value = 0.6, 95% CI: [-1.23, 2.12]</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Conclusion: No significant difference in cholesterol levels observed between male and female patients.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. equivalence t-test:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">t_TOST</span>(<span class="at">formula =</span> Cholesterol <span class="sc">~</span> Sex, <span class="at">data =</span> data,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">eqb =</span> .<span class="dv">5</span>, <span class="at">smd_ci =</span> <span class="st">"t"</span>, <span class="at">var.equal =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Two Sample t-test
+
+The equivalence test was non-significant, t(4998) = 0.07, p = 0.47
+The null hypothesis test was non-significant, t(4998) = -0.516p = 0.61
+NHST: don't reject null significance hypothesis that the effect is equal to zero 
+TOST: don't reject null equivalence hypothesis
+
+TOST Results 
+                  t   df p.value
+t-test     -0.51648 4998   0.606
+TOST Lower  0.06661 4998   0.473
+TOST Upper -1.09957 4998   0.136
+
+Effect Sizes 
+           Estimate      SE              C.I. Conf. Level
+Raw        -0.44289 0.85750 [-1.8536, 0.9678]         0.9
+Hedges's g -0.01461 0.02828 [-0.0611, 0.0319]         0.9
+Note: SMD confidence intervals are an approximation. See vignette("SMD_calcs").</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Equivalence t-test results for Cholesterol levels between female and male patients:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># t-value = 0.07, p-value = 0.47</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TOST Lower: 0.06, p-value = 0.473</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># TOST Upper: -1.09, p-value = 0.13</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Conclusion: The equivalence test was not significant, supporting the null hypothesis that cholesterol levels between male and female groups are not equivalent.</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Bayesian: </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>Bayesian_model <span class="ot">&lt;-</span> <span class="fu">ttestBF</span>(<span class="at">formula =</span> Cholesterol <span class="sc">~</span> Sex, <span class="at">data =</span> data)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_posterior</span>(Bayesian_model) <span class="co"># difference</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Summary of Posterior Distribution
+
+Parameter  | Median |        95% CI |     pd |          ROPE | % in ROPE |    BF |              Prior
+-----------------------------------------------------------------------------------------------------
+Difference |  -0.44 | [-2.09, 1.28] | 69.77% | [-3.03, 3.03] |      100% | 0.036 | Cauchy (0 +- 0.71)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hdi</span>(Bayesian_model) <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Heart_Attack_Risk_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pd</span>(Bayesian_model) <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Heart_Attack_Risk_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rope</span>(Bayesian_model, <span class="at">range =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.03</span>, <span class="fl">3.03</span>))<span class="sc">|&gt;</span><span class="fu">plot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Heart_Attack_Risk_files/figure-html/unnamed-chunk-1-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hdi: Based on the Bayesian analysis, the true difference between groups is likely to be within the interval [-2.10, 1.19] with a 95% probability.</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># The interval includes values that span both negative and positive differences, suggesting that there might be non-significant differences between the groups.</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pd: The probability that the true difference is negative or positive is 69.73%.</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># There is unclear support for the true difference being in either the negative or positive direction, but the probability is slightly higher for a negative difference.</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># rope: The rope is defined as [-3.03, 3.03].</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># It represents a range where differences within this interval are considered practically equivalent or negligible.</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 100% of the posterior distribution falls within this area, indicating strong support for the practical equivalence of the groups.</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Cohen's d Effect Size:</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>effectsize<span class="sc">::</span><span class="fu">effectsize</span>(Bayesian_model) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cohen's d |        95% CI
+-------------------------
+-0.01     | [-0.07, 0.04]
+
+- Estimated using pooled SD.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The estimated Cohen's d is -0.01 with a 95% CI [-0.07, 0.04], indicating a negligible negative effect size and no statistically significant difference between the groups.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>The Second Question</strong></p>
+<p>A two-way ANOVA was conducted to examine the effects of Obesity and Smoking status on Cholesterol levels. Obesity had two levels (Not Obese/Obese), and Smoking status also had two levels (Doesn’t Smoke/Smokes). We found no significant main effect for Obesity [F(1, 4996)=2.11, p=0.146] and no significant main effect for Smoking status [F(1, 4996)=0.58, p=.446]. We found a significant interaction effect between Obesity and Smoking status on Cholesterol levels [F(1, 4996)=4.73, p=0.03], suggesting that the relationship between Obesity and Cholesterol varies depending on an individual’s Smoking status.<br>
+Further examination of this significant interaction effect using simple effect analysis revealed significant differences in Cholesterol levels between obese and non-obese individuals among non-smokers [contrast estimate=3.11, SE=1.21, t(4996)=2.57, p=.01], indicating higher Cholesterol levels among non-smoking non-obese individuals compared to their obese counterparts. This difference was not significant among smokers [contrast estimate=-0.62, SE=1.22, t(4996)=.5, p=.61]. The interaction effect is illustrated in the code’s output.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#anova</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>anova<span class="ot">&lt;-</span><span class="fu">aov_ez</span>(<span class="at">id =</span> <span class="st">"PatientID"</span>, <span class="at">dv =</span> <span class="st">"Cholesterol"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">between =</span> <span class="fu">c</span>(<span class="st">"Obesity"</span>, <span class="st">"Smoking"</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data =</span> data,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">anova_table =</span> <span class="fu">list</span>(<span class="at">es =</span> <span class="st">"pes"</span>)) </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>anova</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type 3 tests)
+
+Response: Cholesterol
+           Effect      df    MSE      F   pes p.value
+1         Obesity 1, 4996 917.99   2.11 &lt;.001    .146
+2         Smoking 1, 4996 917.99   0.58 &lt;.001    .446
+3 Obesity:Smoking 1, 4996 917.99 4.73 * &lt;.001    .030
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '+' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">eta_squared</span>(anova, <span class="at">partial =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Effect Size for ANOVA (Type III)
+
+Parameter       | Eta2 (partial) |       95% CI
+-----------------------------------------------
+Obesity         |       4.22e-04 | [0.00, 1.00]
+Smoking         |       1.16e-04 | [0.00, 1.00]
+Obesity:Smoking |       9.47e-04 | [0.00, 1.00]
+
+- One-sided CIs: upper bound fixed at [1.00].</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#exploring the significant interaction</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggemmeans</span>(anova, <span class="fu">c</span>(<span class="st">"Obesity"</span>, <span class="st">"Smoking"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Predicted values of Cholesterol
+
+Smoking: 0
+
+Obesity | Predicted |         95% CI
+------------------------------------
+0       |    201.63 | 199.99, 203.28
+1       |    198.52 | 196.82, 200.22
+
+Smoking: 1
+
+Obesity | Predicted |         95% CI
+------------------------------------
+0       |    199.11 | 197.40, 200.82
+1       |    199.73 | 198.07, 201.40</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">joint_tests</span>(anova, <span class="at">by =</span> <span class="st">"Smoking"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Smoking = 0:
+ model term df1  df2 F.ratio p.value
+ Obesity      1 4996   6.630  0.0101
+
+Smoking = 1:
+ model term df1  df2 F.ratio p.value
+ Obesity      1 4996   0.259  0.6106</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>em_Obesity_by_Smoking <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(anova, <span class="sc">~</span> Obesity <span class="sc">+</span> Smoking)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>em_Obesity_by_Smoking</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Obesity Smoking emmean    SE   df lower.CL upper.CL
+ 0       0          202 0.840 4996      200      203
+ 1       0          199 0.869 4996      197      200
+ 0       1          199 0.872 4996      197      201
+ 1       1          200 0.849 4996      198      201
+
+Confidence level used: 0.95 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>c_simpeff <span class="ot">&lt;-</span> <span class="fu">contrast</span>(em_Obesity_by_Smoking, <span class="at">method =</span> <span class="st">"pairwise"</span>, <span class="at">by =</span> <span class="st">"Smoking"</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>c_simpeff</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Smoking = 0:
+ contrast            estimate   SE   df t.ratio p.value
+ Obesity0 - Obesity1     3.11 1.21 4996   2.575  0.0101
+
+Smoking = 1:
+ contrast            estimate   SE   df t.ratio p.value
+ Obesity0 - Obesity1    -0.62 1.22 4996  -0.509  0.6106</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">#let's plot</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>em_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(em_Obesity_by_Smoking)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(em_df, <span class="fu">aes</span>(<span class="at">x =</span> Obesity, <span class="at">y =</span> emmean, <span class="at">color =</span> Smoking)) <span class="sc">+</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower.CL, <span class="at">ymax =</span> upper.CL), <span class="at">width =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">group =</span> Smoking), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Obesity Status"</span>, <span class="at">y =</span> <span class="st">"Estimated Marginal Means of Cholesterol"</span>) <span class="sc">+</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"red"</span>, <span class="st">"blue"</span>)) <span class="sc">+</span> </span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0"</span> <span class="ot">=</span> <span class="st">"Not Obese"</span>, <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"Obese"</span>)) <span class="sc">+</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_discrete</span>(<span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0"</span> <span class="ot">=</span> <span class="st">"Doesn't Smoke"</span>, <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"Smokes"</span>)) <span class="sc">+</span></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Heart_Attack_Risk_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>The Third Question</strong></p>
+<p>A multiple linear regression analysis was conducted to investigate the relationship between Cholesterol levels and two predictor variables: BMI and Exercise Hours Per Week. The regression model yielded a significant overall relationship [F(2, 4997)=4.425, p=.01]. However, the model’s explanatory power was limited, with an adjusted R-squared of .001, indicating that only approximately 0.1% of the variance in Cholesterol levels could be explained by BMI and Exercise Hours Per Week. The individual predictors were examined further and indicated that Exercise Hours Per Week was a significant predictor [β=1, 95% C.I. (0.17, 1.84), p=0.019], but BMI was not [β=.15, 95% C.I. (-0.02, 0.32), p=0.07]. The model is illustrated in the code’s output.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fit<span class="ot">&lt;-</span> <span class="fu">lm</span>(Cholesterol <span class="sc">~</span> BMI <span class="sc">+</span> ExerciseHours , <span class="at">data =</span> data)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Cholesterol ~ BMI + ExerciseHours, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-116.10  -20.22   -0.33   20.96  118.29 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   193.01798    2.49378  77.400   &lt;2e-16 ***
+BMI             0.15090    0.08539   1.767   0.0773 .  
+ExerciseHours   1.00471    0.42786   2.348   0.0189 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 30.29 on 4997 degrees of freedom
+Multiple R-squared:  0.001768,  Adjusted R-squared:  0.001368 
+F-statistic: 4.425 on 2 and 4997 DF,  p-value: 0.01202</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter     | Coefficient |   SE |           95% CI | t(4997) |      p
+------------------------------------------------------------------------
+(Intercept)   |      193.02 | 2.49 | [188.13, 197.91] |   77.40 | &lt; .001
+BMI           |        0.15 | 0.09 | [ -0.02,   0.32] |    1.77 | 0.077 
+ExerciseHours |        1.00 | 0.43 | [  0.17,   1.84] |    2.35 | 0.019 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(fit, <span class="at">standardize =</span> <span class="st">"basic"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter     | Std. Coef. |   SE |        95% CI | t(4997) |      p
+--------------------------------------------------------------------
+(Intercept)   |       0.00 | 0.00 | [ 0.00, 0.00] |   77.40 | &lt; .001
+BMI           |       0.02 | 0.01 | [ 0.00, 0.05] |    1.77 | 0.077 
+ExerciseHours |       0.03 | 0.01 | [ 0.01, 0.06] |    2.35 | 0.019 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_performance</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Indices of model performance
+
+AIC       |      AICc |       BIC |    R2 | R2 (adj.) |   RMSE |  Sigma
+-----------------------------------------------------------------------
+48303.042 | 48303.050 | 48329.110 | 0.002 |     0.001 | 30.282 | 30.291</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#let's plot the model</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>ExerciseHours <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(data<span class="sc">$</span>ExerciseHours)) <span class="co">#converting to numeric so we don't run into errors</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">y =</span> Cholesterol, <span class="at">x =</span> ExerciseHours, <span class="at">color =</span> BMI)) <span class="sc">+</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Relationship Between Cholesterol, BMI, and Exercise Hours"</span>,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Exercise Hours"</span>,</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Cholesterol"</span>,</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"BMI"</span>) <span class="sc">+</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_gradient</span>(<span class="at">low =</span> <span class="st">"blue"</span>, <span class="at">high =</span> <span class="st">"pink"</span>) <span class="sc">+</span> </span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Heart_Attack_Risk_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Analysis of the standardized coefficients:</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ExerciseHours has a standardized coefficient of 0.03. P-value &lt; 0.05.</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="co"># BMI has a standardized coefficient of 0.02. P-value &gt; 0.05</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Therefore, based on the standardized coefficients:</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ExerciseHours has a larger standardized contribution to predicting cholesterol levels compared to BMI.</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Conclusion: ExerciseHours shows a statistically significant positive association with cholesterol levels, whereas BMI does not.</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>The Fourth Question</strong></p>
+<p>The moderation analysis examined the moderating effect of Exercise Hours Per Week on the relationship between Family History and Cholesterol levels. The outcome variable for analysis was Cholesterol levels, the predictor variable was Family History, and the moderator was Exercise Hours Per Week. The model yielded an overall significant relationship, despite a low explanatory power [F(3, 4996)=2.63, p=0.04, adjusted R2=.0015]. The interaction between Family History and Exercise Hours Per Week was not significant [β=-1.15, 95% C.I. (-2.82, 0.53), p=0.18]. Further examination of the predictors revealed that Exercise Hours Per Week was a significant predictor [β=1.6, 95% C.I. (0.41, 2.79), p=.009], but Family History was not [β=3.95, 95% C.I. (-1.33, 9.23), p=.142]. These results overall suggest that Exercise Hours Per Week is not a moderator of the relationship between Family History and Cholesterol levels.<br>
+The additive model was explored to compare it to the moderative model. The regression analysis revealed that the model is overall significant, despite a low explanatory power [F(2, 4997)=3.05, p=0.04, adjusted R2=.0008]. Further exploration showed that Exercise Hours Per Week was a significant predictor [β=1.02, 95% C.I. (0.18, 1.86), p=0.017], but Family History was not [β=0.53, 95% C.I. (-1.15, 2.21), p=0.533].<br>
+Results of the model comparison analysis (between the moderative and additive model) showed that the additive model, while penalizing for model complexity, is a better fit to the data [BIC=48331.8, RMSE=30.29, R2=.001] than the moderative model [BIC=48338.6, RMSE=30.28, R2=.002]. However, this is a relatively small difference given the explanatory power of each model. For each of the moderative and additive models, we split the data into training and test sets. The MSE results for each model’s training and testing sets are shown in the code’s output.<br>
+As we can see in Figure 3 below, the test set of both the moderation and additive models has a higher MSE value than the training set. This indicates a pattern of overfitting, where the model performs better on the training set (lower MSE) than on the testing set (higher MSE).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>m_additive <span class="ot">&lt;-</span> <span class="fu">lm</span>(Cholesterol <span class="sc">~</span> FamilyHistory <span class="sc">+</span> ExerciseHours,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> data)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>m_moderation <span class="ot">&lt;-</span> <span class="fu">lm</span>(Cholesterol <span class="sc">~</span> FamilyHistory <span class="sc">*</span> ExerciseHours,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> data)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">#let's check model parameters and trends</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_moderation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Cholesterol ~ FamilyHistory * ExerciseHours, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-117.577  -20.158   -0.386   21.042  119.018 
+
+Coefficients:
+                            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                 194.7482     1.9065 102.148  &lt; 2e-16 ***
+FamilyHistory                 3.9542     2.6931   1.468  0.14209    
+ExerciseHours                 1.5994     0.6077   2.632  0.00852 ** 
+FamilyHistory:ExerciseHours  -1.1463     0.8557  -1.340  0.18043    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 30.3 on 4996 degrees of freedom
+Multiple R-squared:  0.00158,   Adjusted R-squared:  0.0009808 
+F-statistic: 2.636 on 3 and 4996 DF,  p-value: 0.04807</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(m_moderation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter                     | Coefficient |   SE |           95% CI | t(4996) |      p
+----------------------------------------------------------------------------------------
+(Intercept)                   |      194.75 | 1.91 | [191.01, 198.49] |  102.15 | &lt; .001
+FamilyHistory                 |        3.95 | 2.69 | [ -1.33,   9.23] |    1.47 | 0.142 
+ExerciseHours                 |        1.60 | 0.61 | [  0.41,   2.79] |    2.63 | 0.009 
+FamilyHistory × ExerciseHours |       -1.15 | 0.86 | [ -2.82,   0.53] |   -1.34 | 0.180 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emtrends</span>(m_moderation, <span class="sc">~</span> ExerciseHours, <span class="at">var =</span> <span class="st">"FamilyHistory"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> ExerciseHours FamilyHistory.trend    SE   df lower.CL upper.CL
+          2.98               0.534 0.857 4996    -1.15     2.21
+
+Results are averaged over the levels of: FamilyHistory 
+Confidence level used: 0.95 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_performance</span>(m_moderation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Indices of model performance
+
+AIC       |      AICc |       BIC |    R2 | R2 (adj.) |   RMSE |  Sigma
+-----------------------------------------------------------------------
+48305.981 | 48305.993 | 48338.567 | 0.002 | 9.808e-04 | 30.285 | 30.297</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explaining additional model performance:</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co"># AIC=  48303.042</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="co"># AIC is a measure used to compare the goodness of fit of the statistical model, balancing fit with model complexity.</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The large AIC value suggests that the model is less likely to be the best model to explain the variance in cholesterol levels.</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># BIC= 48329.110</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co"># BIC is similar to AIC but places a stronger penalty on models with more parameters.</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="co"># The large BIC value indicates that the model does not fit the data well.</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m_additive)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Cholesterol ~ FamilyHistory + ExerciseHours, data = data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-116.597  -20.078   -0.453   21.125  117.900 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)   196.4682     1.4095 139.385   &lt;2e-16 ***
+FamilyHistory   0.5341     0.8570   0.623    0.533    
+ExerciseHours   1.0212     0.4279   2.387    0.017 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 30.3 on 4997 degrees of freedom
+Multiple R-squared:  0.001222,  Adjusted R-squared:  0.0008219 
+F-statistic: 3.056 on 2 and 4997 DF,  p-value: 0.04716</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">model_parameters</span>(m_additive)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parameter     | Coefficient |   SE |           95% CI | t(4997) |      p
+------------------------------------------------------------------------
+(Intercept)   |      196.47 | 1.41 | [193.70, 199.23] |  139.38 | &lt; .001
+FamilyHistory |        0.53 | 0.86 | [ -1.15,   2.21] |    0.62 | 0.533 
+ExerciseHours |        1.02 | 0.43 | [  0.18,   1.86] |    2.39 | 0.017 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">#now let's compare the models</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_performance</span>(m_additive, m_moderation)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Comparison of Model Performance Indices
+
+Name         | Model |   AIC (weights) |  AICc (weights) |   BIC (weights) |    R2 | R2 (adj.) |   RMSE |  Sigma
+----------------------------------------------------------------------------------------------------------------
+m_additive   |    lm | 48305.8 (0.526) | 48305.8 (0.526) | 48331.8 (0.966) | 0.001 | 8.219e-04 | 30.291 | 30.300
+m_moderation |    lm | 48306.0 (0.474) | 48306.0 (0.474) | 48338.6 (0.034) | 0.002 | 9.808e-04 | 30.285 | 30.297</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co">#----</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co">#training and test</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(data), <span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="fl">0.7</span>) <span class="co">#70:30 partition</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> data[index, ]</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>test_data <span class="ot">&lt;-</span> data[<span class="sc">-</span>index, ]</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>fit_additive<span class="ot">&lt;-</span><span class="fu">lm</span>(Cholesterol <span class="sc">~</span> FamilyHistory <span class="sc">+</span> ExerciseHours,</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">data =</span> training_data)</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>predictions_additive <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_additive, <span class="at">newdata =</span> test_data)</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>fit_moderation<span class="ot">&lt;-</span><span class="fu">lm</span>(Cholesterol <span class="sc">~</span> FamilyHistory <span class="sc">*</span> ExerciseHours,</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> training_data)</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>predictions_moderation<span class="ot">&lt;-</span><span class="fu">predict</span>(fit_moderation, <span class="at">newdata =</span> test_data)</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="co">#let's calculate MSEs</span></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a><span class="co">#for additive model</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>residuals_additive_train <span class="ot">&lt;-</span> training_data<span class="sc">$</span>Cholesterol <span class="sc">-</span> <span class="fu">predict</span>(fit_additive, <span class="at">newdata =</span> training_data)</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>residuals_additive_test <span class="ot">&lt;-</span> test_data<span class="sc">$</span>Cholesterol <span class="sc">-</span> <span class="fu">predict</span>(fit_additive, <span class="at">newdata =</span> test_data)</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>mse_additive_train <span class="ot">&lt;-</span> <span class="fu">mean</span>(residuals_additive_train<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>mse_additive_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 905.6822</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>mse_additive_test <span class="ot">&lt;-</span> <span class="fu">mean</span>(residuals_additive_test<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>mse_additive_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 945.3417</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">#for moderation model</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>residuals_moderation_train <span class="ot">&lt;-</span> training_data<span class="sc">$</span>Cholesterol <span class="sc">-</span> <span class="fu">predict</span>(fit_moderation, <span class="at">newdata =</span> training_data)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>residuals_moderation_test <span class="ot">&lt;-</span> test_data<span class="sc">$</span>Cholesterol <span class="sc">-</span> <span class="fu">predict</span>(fit_moderation, <span class="at">newdata =</span> test_data)</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>mse_moderation_train <span class="ot">&lt;-</span> <span class="fu">mean</span>(residuals_moderation_train<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>mse_moderation_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 904.5554</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>mse_moderation_test <span class="ot">&lt;-</span> <span class="fu">mean</span>(residuals_moderation_test<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>mse_moderation_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 947.6777</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co">#let's create a barchart for MSEs</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co"># first, let's create a df</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>mse_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Model =</span> <span class="fu">c</span>(<span class="st">"Additive Model (Training)"</span>, <span class="st">"Additive Model (Test)"</span>, </span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Moderation Model (Training)"</span>, <span class="st">"Moderation Model (Test)"</span>),</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">MSE =</span> <span class="fu">c</span>(<span class="fl">905.6822</span>, <span class="fl">945.3417</span>, <span class="fl">904.5554</span>, <span class="fl">947.6777</span>), <span class="co">#these are the results respectively</span></span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Type =</span> <span class="fu">c</span>(<span class="st">"Training"</span>, <span class="st">"Test"</span>, <span class="st">"Training"</span>, <span class="st">"Test"</span>)</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="co">#and now let's plot MSEs</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mse_data, <span class="fu">aes</span>(<span class="at">x =</span> Model, <span class="at">y =</span> MSE, <span class="at">fill =</span> Type)) <span class="sc">+</span></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">width =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mean Squared Error (MSE) Comparison"</span>,</span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Model"</span>, <span class="at">y =</span> <span class="st">"MSE"</span>) <span class="sc">+</span></span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Training"</span> <span class="ot">=</span> <span class="st">"blue"</span>, <span class="st">"Test"</span> <span class="ot">=</span> <span class="st">"green"</span>)) <span class="sc">+</span></span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Heart_Attack_Risk_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      return note.innerHTML;
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,222 @@
+---
+title: "Heart Attack Risk Prediction"
+editor: visual
+---
+
+## Introduction
+
+The dataset we will be using is called “Heart Attack Prediction,” downloaded from Kaggle. It includes 5,000 observations (randomly sampled and independent) and 26 variables:
+
+            Patient ID, Age, Sex (categorical), Cholesterol (continuous), Blood Pressure (continuous), Heart Rate (continuous), Diabetes (dummy coded, 0/1), Family History (dummy coded, 0/1), Smoking (dummy coded, 0/1), Obesity (dummy coded, 0/1), Alcohol Consumption (dummy coded, 0/1), Exercise Hours (continuous), Diet (categorical, Healthy/Average/Unhealthy), Previous Heart Problems (dummy coded, 0/1), Medication Use (dummy coded, 0/1), Stress Level (continuous), Sedentary Hours Per Day (continuous), Income (continuous), BMI (body mass index; continuous), Triglycerides (continuous), Physical Activity Days Per Week (discrete), Sleep Hours Per Day (discrete), Country (categorical), Continent (categorical), Hemisphere (categorical), and Heart Attack Risk (dummy coded, 0/1).
+
+## Method
+
+We are going to test four research questions regarding the data on heart attack risk, using RStudio to statistically analyze the data:  
+1.	Is there a difference in Cholesterol levels between female and male patients?  
+This question will be analyzed in three ways learned in class:  
+a.	Null hypothesis significance testing (NHST): here, the null hypothesis would be that there is no difference between the genders, while the alternative hypothesis would state that there is a difference.   
+b.	Equivalence test: here, the main question would be if Cholesterol levels for the genders are equivalent within a certain margin of error.  
+c.	Bayesian Testing: here, we will test the probability that Cholesterol levels for females’ is different than that of males’, given the data and prior beliefs.  
+	Before analyzing the data to answer this question, we will conduct a power analysis to determine the sample size needed.  
+2.	How does Cholesterol levels vary across different combinations of Obesity and Smoking status? 
+This question will be analyzed using a two-way analysis of variance (ANOVA). Our dependent variable will be Cholesterol, while our between-subject variables will be Obesity and Smoking.  
+3.	Does BMI and Exercise Hours predict Cholesterol levels?  
+This question will be analyzed using a multiple regression model.   
+4.	Does Exercise Hours Per Week moderate the relationship between Family History and Cholesterol?   
+This question will be analyzed using moderation analysis. In addition to this question, we will also be comparing the moderation model to the additive version to see which is a better fit and splitting the data of each model into training and test sets.  
+a new package we will be using in this assignment and that we have not learned in class is the “pwr” package. We chose to use this specific package to calculate how many participants are needed in each group to get to a statistical power of 90% in the t-test used in our first research question.   
+
+## Results
+
+**The First Question**  
+
+First, we conducted a power analysis to determine the required sample size for a two-sample t-test. The parameters we considered were effect size (Cohen’s d) of 0.2 (bad scenario where there is only a small effect in the real world), a significance level of 0.05, and a desired power of 0.9 under a two-sided alternative hypothesis. The analysis yielded a calculated sample size of approximately 526 participants per group, indicating the number needed to achieve a statistical power of 90%. This ensures a larger likelihood of correctly rejecting the null hypothesis and detecting a meaningful effect size.  
+The t-test results showed that there is no significant difference between male patients (M = 200, SD = 29.76) and female patients (M = 199.56, SD = 30.86) in Cholesterol levels [t(4998) = 0.51, 95% C.I. (-1.23, 2.12),p = .6]. In assessing Cholesterol levels between male (M = 200, SD = 29.76) and female (M = 199.56, SD = 30.86) patients using two one-sided t-tests using equivalence testing, the results indicated that neither the test for the lower bound [t = 0.066, p = 0.47] nor the test for the upper bound [t = -1.099, p = 0.136] reached significance. The equivalence test overall was not significant [t= 0.07, p = 0.473], indicating that the difference in cholesterol levels between male and female groups does not fall within the predefined equivalence interval. Therefore, we cannot reject the null hypothesis that there is a difference in Cholesterol levels between males and females.   
+The Bayesian t-test indicated strong evidence in favor of the null hypothesis (BF=.036). This Bayes Factor suggests that the observed data are much more likely under the null hypothesis compared to the alternative hypothesis. The 95% Highest Density Interval (HDI) for the true difference between groups in cholesterol levels is estimated to be [-2.10, 1.19]. This interval spans both negative and positive differences, suggesting non-significant differences between the groups. The probability distribution (pd) indicates a 69.73% likelihood for the true difference to be slightly higher for a negative difference. Additionally, the Region of Practical Equivalence (ROPE) is defined as [-3.03, 3.03], where differences are considered negligible. Notably, 100% of the posterior distribution falls within this ROPE, indicating strong support for the practical equivalence between the groups. Cohen's d was estimated to be -0.01 [95% CI (-0.07, 0.04)], suggesting a negligible negative effect size.  
+```{r, message=FALSE, warning=FALSE}
+library(afex) 
+library(emmeans) 
+library(effectsize)
+library(ggeffects) 
+library(parameters) 
+library(performance) 
+library(pwr)
+library(ggplot2)
+library(dplyr)
+library(correlation)
+library(TOSTER) 
+library(BayesFactor) 
+library(bayestestR)
+data<-read.csv("/Users/sabahanani/Desktop/תואר שני/Semester A/שיטות מחקר מתקדמות/עבודה מסכמת/206683112_206357170.csv")
+#NHST, Bayes, & Equivalence test
+#first of all, power analysis
+pwr.t.test(d=0.2, sig.level=0.05, power=0.9, alternative="two.sided")
+#t-test
+t_test_HR <- t.test(data$Cholesterol[data$Sex == "Male"],
+                    data$Cholesterol[data$Sex == "Female"], var.equal = TRUE)
+t_test_HR
+# t-test results for Cholesterol levels between female and male patients:
+# t-value = 0.51, p-value = 0.6, 95% CI: [-1.23, 2.12]
+# Conclusion: No significant difference in cholesterol levels observed between male and female patients.
+# 2. equivalence t-test:
+t_TOST(formula = Cholesterol ~ Sex, data = data,
+       eqb = .5, smd_ci = "t", var.equal = TRUE)
+# Equivalence t-test results for Cholesterol levels between female and male patients:
+# t-value = 0.07, p-value = 0.47
+# TOST Lower: 0.06, p-value = 0.473
+# TOST Upper: -1.09, p-value = 0.13
+# Conclusion: The equivalence test was not significant, supporting the null hypothesis that cholesterol levels between male and female groups are not equivalent.
+# 3. Bayesian: 
+Bayesian_model <- ttestBF(formula = Cholesterol ~ Sex, data = data)
+describe_posterior(Bayesian_model) # difference
+hdi(Bayesian_model) |> plot()
+pd(Bayesian_model) |> plot()
+rope(Bayesian_model, range = c(-3.03, 3.03))|>plot()
+# hdi: Based on the Bayesian analysis, the true difference between groups is likely to be within the interval [-2.10, 1.19] with a 95% probability.
+# The interval includes values that span both negative and positive differences, suggesting that there might be non-significant differences between the groups.
+# pd: The probability that the true difference is negative or positive is 69.73%.
+# There is unclear support for the true difference being in either the negative or positive direction, but the probability is slightly higher for a negative difference.
+# rope: The rope is defined as [-3.03, 3.03].
+# It represents a range where differences within this interval are considered practically equivalent or negligible.
+# 100% of the posterior distribution falls within this area, indicating strong support for the practical equivalence of the groups.
+# Cohen's d Effect Size:
+effectsize::effectsize(Bayesian_model) 
+# The estimated Cohen's d is -0.01 with a 95% CI [-0.07, 0.04], indicating a negligible negative effect size and no statistically significant difference between the groups.
+```
+
+**The Second Question**  
+
+A two-way ANOVA was conducted to examine the effects of Obesity and Smoking status on Cholesterol levels. Obesity had two levels (Not Obese/Obese), and Smoking status also had two levels (Doesn’t Smoke/Smokes). We found no significant main effect for Obesity [F(1, 4996)=2.11, p=0.146] and no significant main effect for Smoking status [F(1, 4996)=0.58, p=.446]. We found a significant interaction effect between Obesity and Smoking status on Cholesterol levels [F(1, 4996)=4.73, p=0.03], suggesting that the relationship between Obesity and Cholesterol varies depending on an individual’s Smoking status.   
+	Further examination of this significant interaction effect using simple effect analysis revealed significant differences in Cholesterol levels between obese and non-obese individuals among non-smokers [contrast estimate=3.11, SE=1.21, t(4996)=2.57, p=.01], indicating higher Cholesterol levels among non-smoking non-obese individuals compared to their obese counterparts. This difference was not significant among smokers [contrast estimate=-0.62, SE=1.22, t(4996)=.5, p=.61]. The interaction effect is illustrated in the code's output.  
+```{r, message=FALSE, warning=FALSE}
+#anova
+anova<-aov_ez(id = "PatientID", dv = "Cholesterol",
+                       between = c("Obesity", "Smoking"),
+                       data = data,
+                       anova_table = list(es = "pes")) 
+anova
+eta_squared(anova, partial = TRUE)
+#exploring the significant interaction
+ggemmeans(anova, c("Obesity", "Smoking"))
+joint_tests(anova, by = "Smoking")
+em_Obesity_by_Smoking <- emmeans(anova, ~ Obesity + Smoking)
+em_Obesity_by_Smoking
+c_simpeff <- contrast(em_Obesity_by_Smoking, method = "pairwise", by = "Smoking")
+c_simpeff
+#let's plot
+em_df <- as.data.frame(em_Obesity_by_Smoking)
+ggplot(em_df, aes(x = Obesity, y = emmean, color = Smoking)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = lower.CL, ymax = upper.CL), width = 0.2) +
+  geom_line(aes(group = Smoking), linetype = "dashed") +
+  labs(x = "Obesity Status", y = "Estimated Marginal Means of Cholesterol") +
+  scale_color_manual(values = c("red", "blue")) + 
+  scale_x_discrete(labels = c("0" = "Not Obese", "1" = "Obese")) +
+  scale_color_discrete(labels = c("0" = "Doesn't Smoke", "1" = "Smokes")) +
+  theme_minimal()
+```
+
+**The Third Question**  
+
+A multiple linear regression analysis was conducted to investigate the relationship between Cholesterol levels and two predictor variables: BMI and Exercise Hours Per Week. The regression model yielded a significant overall relationship [F(2, 4997)=4.425, p=.01]. However, the model’s explanatory power was limited, with an adjusted R-squared of .001, indicating that only approximately 0.1% of the variance in Cholesterol levels could be explained by BMI and Exercise Hours Per Week. The individual predictors were examined further and indicated that Exercise Hours Per Week was a significant predictor [β=1, 95% C.I. (0.17, 1.84), p=0.019], but BMI was not [β=.15, 95% C.I. (-0.02, 0.32), p=0.07]. The model is illustrated in the code's output.  
+```{r, message=FALSE, warning=FALSE}
+fit<- lm(Cholesterol ~ BMI + ExerciseHours , data = data)
+summary(fit)
+model_parameters(fit)
+model_parameters(fit, standardize = "basic") 
+model_performance(fit)
+#let's plot the model
+data$ExerciseHours <- as.numeric(as.character(data$ExerciseHours)) #converting to numeric so we don't run into errors
+ggplot(data, aes(y = Cholesterol, x = ExerciseHours, color = BMI)) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_smooth(method = "lm") +
+  labs(title = "Relationship Between Cholesterol, BMI, and Exercise Hours",
+       x = "Exercise Hours",
+       y = "Cholesterol",
+       color = "BMI") +
+  scale_color_gradient(low = "blue", high = "pink") + 
+  theme_minimal() +
+  theme(legend.position = "bottom")
+# Analysis of the standardized coefficients:
+# ExerciseHours has a standardized coefficient of 0.03. P-value < 0.05.
+# BMI has a standardized coefficient of 0.02. P-value > 0.05
+# Therefore, based on the standardized coefficients:
+# ExerciseHours has a larger standardized contribution to predicting cholesterol levels compared to BMI.
+# Conclusion: ExerciseHours shows a statistically significant positive association with cholesterol levels, whereas BMI does not.
+```
+
+**The Fourth Question**  
+
+The moderation analysis examined the moderating effect of Exercise Hours Per Week on the relationship between Family History and Cholesterol levels. The outcome variable for analysis was Cholesterol levels, the predictor variable was Family History, and the moderator was Exercise Hours Per Week. The model yielded an overall significant relationship, despite a low explanatory power [F(3, 4996)=2.63, p=0.04, adjusted R2=.0015]. The interaction between Family History and Exercise Hours Per Week was not significant [β=-1.15, 95% C.I. (-2.82, 0.53), p=0.18]. Further examination of the predictors revealed that Exercise Hours Per Week was a significant predictor [β=1.6, 95% C.I. (0.41, 2.79), p=.009], but Family History was not [β=3.95, 95% C.I. (-1.33, 9.23), p=.142]. These results overall suggest that Exercise Hours Per Week is not a moderator of the relationship between Family History and Cholesterol levels.  
+	The additive model was explored to compare it to the moderative model. The regression analysis revealed that the model is overall significant, despite a low explanatory power [F(2, 4997)=3.05, p=0.04, adjusted R2=.0008]. Further exploration showed that Exercise Hours Per Week was a significant predictor [β=1.02, 95% C.I. (0.18, 1.86), p=0.017], but Family History was not [β=0.53, 95% C.I. (-1.15, 2.21), p=0.533].  
+	Results of the model comparison analysis (between the moderative and additive model) showed that the additive model, while penalizing for model complexity,  is a better fit to the data [BIC=48331.8, RMSE=30.29, R2=.001] than the moderative model [BIC=48338.6, RMSE=30.28, R2=.002]. However, this is a relatively small difference given the explanatory power of each model.
+	For each of the moderative and additive models, we split the data into training and test sets. The MSE results for each model’s training and testing sets are shown in the code's output.   
+As we can see in Figure 3 below, the test set of both the moderation and additive models has a higher MSE value than the training set. This indicates a pattern of overfitting, where the model performs better on the training set (lower MSE) than on the testing set (higher MSE).   
+```{r, message=FALSE, warning=FALSE}
+m_additive <- lm(Cholesterol ~ FamilyHistory + ExerciseHours,
+                 data = data)
+m_moderation <- lm(Cholesterol ~ FamilyHistory * ExerciseHours,
+                   data = data)
+#let's check model parameters and trends
+summary(m_moderation)
+model_parameters(m_moderation)
+emtrends(m_moderation, ~ ExerciseHours, var = "FamilyHistory")
+model_performance(m_moderation)
+# Explaining additional model performance:
+# AIC=  48303.042
+# AIC is a measure used to compare the goodness of fit of the statistical model, balancing fit with model complexity.
+# The large AIC value suggests that the model is less likely to be the best model to explain the variance in cholesterol levels.
+# BIC= 48329.110
+# BIC is similar to AIC but places a stronger penalty on models with more parameters.
+# The large BIC value indicates that the model does not fit the data well.
+summary(m_additive)
+model_parameters(m_additive)
+#now let's compare the models
+compare_performance(m_additive, m_moderation)
+#----
+#training and test
+set.seed(123)
+index <- sample(1:nrow(data), nrow(data) * 0.7) #70:30 partition
+training_data <- data[index, ]
+test_data <- data[-index, ]
+fit_additive<-lm(Cholesterol ~ FamilyHistory + ExerciseHours,
+         data = training_data)
+predictions_additive <- predict(fit_additive, newdata = test_data)
+fit_moderation<-lm(Cholesterol ~ FamilyHistory * ExerciseHours,
+                   data = training_data)
+predictions_moderation<-predict(fit_moderation, newdata = test_data)
+#let's calculate MSEs
+#for additive model
+residuals_additive_train <- training_data$Cholesterol - predict(fit_additive, newdata = training_data)
+residuals_additive_test <- test_data$Cholesterol - predict(fit_additive, newdata = test_data)
+mse_additive_train <- mean(residuals_additive_train^2)
+mse_additive_train
+mse_additive_test <- mean(residuals_additive_test^2)
+mse_additive_test
+#for moderation model
+residuals_moderation_train <- training_data$Cholesterol - predict(fit_moderation, newdata = training_data)
+residuals_moderation_test <- test_data$Cholesterol - predict(fit_moderation, newdata = test_data)
+mse_moderation_train <- mean(residuals_moderation_train^2)
+mse_moderation_train
+mse_moderation_test <- mean(residuals_moderation_test^2)
+mse_moderation_test
+#let's create a barchart for MSEs
+# first, let's create a df
+mse_data <- data.frame(
+  Model = c("Additive Model (Training)", "Additive Model (Test)", 
+            "Moderation Model (Training)", "Moderation Model (Test)"),
+  MSE = c(905.6822, 945.3417, 904.5554, 947.6777), #these are the results respectively
+  Type = c("Training", "Test", "Training", "Test")
+)
+#and now let's plot MSEs
+ggplot(mse_data, aes(x = Model, y = MSE, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.7) +
+  labs(title = "Mean Squared Error (MSE) Comparison",
+       x = "Model", y = "MSE") +
+  scale_fill_manual(values = c("Training" = "blue", "Test" = "green")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+

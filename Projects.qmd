@@ -36,3 +36,14 @@ editor: visual
 </div>
 :::
 :::
+::: {raw}
+::: {style="display: flex; align-items: center;"}
+<img src="./assets/img/rstudio.png" alt="SQL Class Assignment" width="200px" style="margin-right: 40px;"/>
+
+<div>
+
+[RStudio Statistical Analysis, Heart Attack Risk Prediction](Heart_Attack_Risk.html)
+
+</div>
+:::
+:::
