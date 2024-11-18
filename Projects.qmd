@@ -27,7 +27,7 @@ editor: visual
 :::
 ::: {raw}
 ::: {style="display: flex; align-items: center;"}
-<img src="./assets/img/powerbi.png" alt="SQL Class Assignment" width="200px" style="margin-right: 40px;"/>
+<img src="./assets/img/powerbi.png" alt="Interactive PowerBI Dashboard" width="200px" style="margin-right: 40px;"/>
 
 <div>
 
@@ -38,11 +38,22 @@ editor: visual
 :::
 ::: {raw}
 ::: {style="display: flex; align-items: center;"}
-<img src="./assets/img/rstudio.png" alt="SQL Class Assignment" width="200px" style="margin-right: 40px;"/>
+<img src="./assets/img/rstudio.png" alt="RStudio Statistical Analysis, Heart Attack Risk Prediction" width="200px" style="margin-right: 40px;"/>
 
 <div>
 
 [RStudio Statistical Analysis, Heart Attack Risk Prediction](Heart_Attack_Risk.html)
+
+</div>
+:::
+:::
+::: {raw}
+::: {style="display: flex; align-items: center;"}
+<img src="./assets/img/images.jpeg" alt="fMRI Data Analysis with Python" width="200px" style="margin-right: 40px;"/>
+
+<div>
+
+[fMRI Data Analysis with Python](206683112.html)
 
 </div>
 :::
