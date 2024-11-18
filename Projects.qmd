@@ -3,8 +3,8 @@ title: "Projects"
 editor: visual
 ---
 
-::: {raw}
-::: {style="display: flex; align-items: center;"}
+::::: {raw}
+:::: {style="display: flex; align-items: center;"}
 <img src="./assets/img/tidytuesday1.png" alt="Tidytuesday of May 20, 2024" width="200px" style="margin-right: 40px;"/>
 
 <div>
@@ -12,10 +12,11 @@ editor: visual
 [Tidytuesday of May 20, 2024](TidyTuesday1.html)
 
 </div>
-:::
-:::
-::: {raw}
-::: {style="display: flex; align-items: center;"}
+::::
+:::::
+
+::::: {raw}
+:::: {style="display: flex; align-items: center;"}
 <img src="./assets/img/SQL.jpg" alt="SQL Class Assignment" width="200px" style="margin-right: 40px;"/>
 
 <div>
@@ -23,10 +24,11 @@ editor: visual
 [SQL Class Assignment](Assignment_Saba.html)
 
 </div>
-:::
-:::
-::: {raw}
-::: {style="display: flex; align-items: center;"}
+::::
+:::::
+
+::::: {raw}
+:::: {style="display: flex; align-items: center;"}
 <img src="./assets/img/powerbi.png" alt="Interactive PowerBI Dashboard" width="200px" style="margin-right: 40px;"/>
 
 <div>
@@ -34,10 +36,11 @@ editor: visual
 [Interactive PowerBI Dashboard](https://app.powerbi.com/groups/me/reports/7bb15d32-06eb-4fdb-8c27-4dd646caa98b?ctid=dde3bb7d-7d5a-4c0b-8d6b-71fc793061c8&pbi_source=linkShare)
 
 </div>
-:::
-:::
-::: {raw}
-::: {style="display: flex; align-items: center;"}
+::::
+:::::
+
+::::: {raw}
+:::: {style="display: flex; align-items: center;"}
 <img src="./assets/img/rstudio.png" alt="RStudio Statistical Analysis, Heart Attack Risk Prediction" width="200px" style="margin-right: 40px;"/>
 
 <div>
@@ -45,10 +48,11 @@ editor: visual
 [RStudio Statistical Analysis, Heart Attack Risk Prediction](Heart_Attack_Risk.html)
 
 </div>
-:::
-:::
-::: {raw}
-::: {style="display: flex; align-items: center;"}
+::::
+:::::
+
+::::: {raw}
+:::: {style="display: flex; align-items: center;"}
 <img src="./assets/img/fmri_figure.png" alt="fMRI Data Analysis with Python" width="200px" style="margin-right: 40px;"/>
 
 <div>
@@ -56,5 +60,5 @@ editor: visual
 [fMRI Data Analysis with Python](206683112.html)
 
 </div>
-:::
-:::
+::::
+:::::
