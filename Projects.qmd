@@ -62,3 +62,15 @@ editor: visual
 </div>
 ::::
 :::::
+
+::::: {raw}
+:::: {style="display: flex; align-items: center;"}
+<img src="./assets/img/Blog-What-is-NLP.jpg" alt="Fake News Detection Using NLP" width="200px" style="margin-right: 40px;"/>
+
+<div>
+
+[Fake News Detection Using NLP](206683112_NLP.html)
+
+</div>
+::::
+:::::
